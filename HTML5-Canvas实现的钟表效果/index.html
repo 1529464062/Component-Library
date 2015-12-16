@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>canvas钟表</title>
+<meta name="Keywords" content="">
+<meta name="author" content="@my_programmer">
+<style type="text/css">
+body{margin:0;}
+</style>
+</head>
+<body onload="run()">
+<!--推荐使用400x400像素大小-->
+<canvas id="canvas" width=400 height=400 style="border: 1px #ccc solid;">如果你看到这段文字，说明你的浏览器弱爆了！</canvas>
+<script>
+window.onload=draw;
+function draw() {
+var canvas = document.getElementById("canvas");
+var O_X=canvas.width/2;//设定圆心横坐标
+var O_Y=canvas.height/2;//设定圆心纵坐标
+var O_R=canvas.width/4*3/2;//设定半径
+var O_N_R=canvas.width/2/10*6;
+var O_B_W_R=canvas.width/2*145/200;
+var O_B_N_R=canvas.width/2*135/200;
+var O_X_W_R=canvas.width/2*146/200;
+var O_X_N_R=canvas.width/2*140/200;
+var O_S_D_R=canvas.width/2*6/200;
+var O_S_C_R=canvas.width/2*85/200;
+
+var O_F_D_R=canvas.width/2*8/200;
+var O_F_C_R=canvas.width/2*105/200;
+
+var O_M_D_R=canvas.width/2*10/200;
+var O_M_C_R=canvas.width/2*120/200;
+var canvas=document.getElementById('canvas');
+var context=canvas.getContext('2d');
+context.save(); ///////////////////////////////////保存
+context.translate(O_X,O_Y);//设定表盘的圆心坐标
+var deg=2*Math.PI/12;    
+//////////////////////////////////////////////////表盘
+context.save();    
+context.beginPath();    
+for(var i=0;i<13;i++){
+var x=Math.sin(i*deg);
+var y=-Math.cos(i*deg);
+context.lineTo(x*O_R,y*O_R);//设定表盘的半径
+}
+var c=context.createRadialGradient(0,0,0,0,0,(O_R*130/200));//
+c.addColorStop(0,"#22f");
+c.addColorStop(1,"#0ef")
+context.fillStyle=c;
+context.fill();
+context.closePath();    
+context.restore();    
+//////////////////////////////////////////////////数字
+context.save();
+context.beginPath();
+for(var i=1;i<13;i++){
+var x1=Math.sin(i*deg);
+var y1=-Math.cos(i*deg);
+context.fillStyle="#fff";
+context.font="bold 20px Calibri";
+context.textAlign='center';
+context.textBaseline='middle';
+context.fillText(i,x1*O_N_R,y1*O_N_R);//设定数字距圆心的距离
+}
+context.closePath();    
+context.restore();    
+//////////////////////////////////////////////////大刻度
+context.save();
+context.beginPath();    
+for(var i=0;i<12;i++){
+var x2=Math.sin(i*deg);
+var y2=-Math.cos(i*deg);
+context.moveTo(x2*O_B_W_R,y2*O_B_W_R);//设定大刻度外圆距圆心的位置
+context.lineTo(x2*O_B_N_R,y2*O_B_N_R);//设定大刻度内圆距圆心的位置
+}    
+context.strokeStyle='#fff';
+context.lineWidth=4;
+context.stroke();
+context.closePath();
+context.restore();    
+//////////////////////////////////////////////////小刻度
+context.save();
+var deg1=2*Math.PI/60;
+context.beginPath();    
+for(var i=0;i<60;i++){
+var x2=Math.sin(i*deg1);
+var y2=-Math.cos(i*deg1);
+context.moveTo(x2*O_X_W_R,y2*O_X_W_R);//设定小刻度外圆距圆心的位置
+context.lineTo(x2*O_X_N_R,y2*O_X_N_R);//设定小刻度内圆距圆心的位置
+}    
+context.strokeStyle='#fff';
+context.lineWidth=2;
+context.stroke();
+context.closePath();    
+context.restore();    
+///////////////////////////////////////////////////文字
+/*
+context.save();
+context.strokeStyle="#fff";
+context.font=' 34px sans-serif';
+context.textAlign='center';
+context.textBaseline='middle';
+context.strokeText('canvas',0,65);    
+context.restore();
+*/
+/////////////////////////////////////////////////new Date
+var time=new Date();
+var h=(time.getHours()%12)*2*Math.PI/12;
+var m=time.getMinutes()*2*Math.PI/60;
+var s=time.getSeconds()*2*Math.PI/60;
+
+////////////////////////////////////////////////时针
+context.save();
+context.rotate( h + m/12 + s/720) ;
+context.beginPath();
+context.moveTo(0,O_S_D_R);//圆心分割，较短一边的长度
+context.lineTo(0,-O_S_C_R);//圆心分割，较长一边的长度
+context.strokeStyle="#fff";
+context.lineWidth=6;
+context.stroke();
+context.closePath();
+context.restore();
+//////////////////////////////////////////////分针
+context.save();
+context.rotate( m+s/60 ) ;
+context.beginPath();
+context.moveTo(0,O_F_D_R);//圆心分割，较短一边的长度
+context.lineTo(0,-O_F_C_R);//圆心分割，较长一边的长度
+context.strokeStyle="#fff";
+context.lineWidth=4;
+context.stroke();
+context.closePath();
+context.restore();
+/////////////////////////////////////////////秒针
+context.save();
+context.rotate( s ) ;
+context.beginPath();
+context.moveTo(0,O_M_D_R);//圆心分割，较短一边的长度
+context.lineTo(0,-O_M_C_R);//圆心分割，较长一边的长度
+context.strokeStyle="#fff";
+context.lineWidth=2;
+context.stroke();
+context.closePath();
+context.restore();    
+context.restore();/////////////////////////////栈出
+setTimeout(draw, 500);/////////////////////////////计时器
+
+}
+
+</script>
+</body>
+</html>
